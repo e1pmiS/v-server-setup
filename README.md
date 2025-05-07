@@ -12,7 +12,7 @@ This document outlines the steps that were followed to set up a V-Server for pro
 
 To securely connect to the server, an SSH key pair was generated.
 
-On the local machine, the following command was run to generate the SSH key pair (if it was not generated already):
+On the local machine, the following command was run to generate the SSH key pair:
 
 ```bash
 ssh-keygen -t ed25519
