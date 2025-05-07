@@ -66,7 +66,7 @@ Next, Nginx was installed, which was used as the web server:
 ```bash
 sudo apt install nginx
 ```
-3. Created an alternative  HTML File
+### 3. Created an alternative  HTML File
 A simple HTML file was created to be served by Nginx. 
 
 The following directory structure and HTML file were created:
