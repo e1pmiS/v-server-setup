@@ -2,49 +2,52 @@
 
 ## Introduction
 
-This document outlines the steps that were followed to set up a V-Server for project deployment. It covered configuring SSH access, installing and configuring a web server (Nginx), and setting up GitHub integration.
-
----
+This document outlines the steps to set up a V-Server for project deployment. It covers configuring SSH access, installing and configuring a web server (Nginx), and setting up GitHub integration.
 
 ## SSH Configuration
 
-### 1. Generated SSH Key Pair
+### 1. Generate SSH Key Pair
 
-To securely connect to the server, an SSH key pair was generated.
+Generate an SSH key pair to securely connect to the server.
 
-On the local machine, the following command was run to generate the SSH key pair:
+On the local machine, run the following command to generate the SSH key pair:
 
 ```bash
 ssh-keygen -t ed25519
-
 ```
 
-This generated an SSH key pair (public and private keys) in the ~/.ssh/ directory.
+This generates an SSH key pair (public and private keys) in the ~/.ssh/ directory.
 
-### 2. Copied the Public Key to the Server
-After generating the SSH key pair, the public key was copied to the server. This allowed authentication using the SSH key rather than a password.
+### 2. Copy the Public Key to the Server
 
-The ssh-copy-id command was used to transfer the public key:
+After generating the SSH key pair, copy the public key to the server. This enables authentication using the SSH key instead of a password.
+
+Use the ssh-copy-id command to transfer the public key:
+
 ```bash
-ssh-copy-id -i /Users/abdul/.ssh/id_ed25519.pub aalibrahim@128.140.8.32
+ssh-copy-id -i ~/.ssh/id_ed25519.pub username@server_ip
 ```
-### 3. Disabled Password Authentication
-To enhance security, password-based login was disabled, and only SSH key authentication was allowed.
 
-The SSH configuration file was edited as follows:
+### 3. Disable Password Authentication
+
+To enhance security, disable password-based login and allow only SSH key authentication.
+
+Edit the SSH configuration file as follows:
 
 ```bash
 sudo nano /etc/ssh/sshd_config
 ```
 
-The following line was modified:
+Modify the following line:
 
 ```bash
+# change password authentication to no in order to disable passwords for logins
+#PasswordAuthentication yes
 PasswordAuthentication no
 ```
-The changes were saved, and the editor was closed.
+Save the changes and close the editor.
 
-Then, the SSH service was restarted to apply the changes:
+Restart the SSH service to apply the changes:
 
 ```bash
 sudo systemctl restart sshd
@@ -52,118 +55,83 @@ sudo systemctl restart sshd
 
 ## Webserver installation and configuration 
 
-### 1. Updated and Upgraded the Packages
-Before installing the web server, the system was updated by running the following commands:
+### 1. Update and Upgrade the Packages
+
+Before installing the web server, update the system by running the following commands:
 
 ```bash
 sudo apt update
 sudo apt upgrade
 ```
 
-### 2. Installed Nginx
-Next, Nginx was installed, which was used as the web server:
+### 2. Install Nginx
+
+Next, install Nginx to use it as the web server:
 
 ```bash
 sudo apt install nginx
 ```
-### 3. Created an alternative  HTML File
-A simple HTML file was created to be served by Nginx. 
 
-The following directory structure and HTML file were created:
+### 3. Create an alternative  HTML File
+
+Create a simple HTML file to be served by Nginx.
+
+Create the following directory structure and HTML file:
 
 ```bash
 sudo mkdir /var/www/alternatives
 sudo touch /var/www/alternatives/alternative-index.html
 ```
-The HTML file was edited with the following content:
+
+Edit the HTML file with the following content:
 
 ```bash
 sudo nano /var/www/alternatives/alternative-index.html
-
 ```
+
 The content was as follows:
 
-```html 
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>Hello Nginx</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      background: #f4f4f4;
-      text-align: center;
-      padding: 100px;
-    }
-    h1 {
-      color: #2c3e50;
-    }
-    p {
-      font-size: 1.2em;
-      color: #555;
-    }
-  </style>
-</head>
-<body>
-  <h1>Hello Nginx</h1>
-  <p>I just set up my server on the cloud and I am ready for the next pro>
-</body>
-</html>
-```
-The file was saved and the editor was exited.
+[index.html](Docs/index.html)
 
-### 4. Configured Nginx Server Block
+Save the file and exit the editor.
 
-A new Nginx configuration file was created for the "alternatives" website. This specified the server's root directory and the default index file.
+### 4. Configure Nginx Server Block
 
-The following configuration was added:
+Create a new Nginx configuration file for the website (e.g., “alternatives”). Specify the server’s root directory and the default index file.
+
+Open the configuration file with:
 
 ```bash
 sudo nano /etc/nginx/sites-enabled/alternatives
 ```
 
-The following server block was added:
+Add the following server block:
 
-```bash
-server {
-    listen 8081;
-    listen [::]:8081;
+[Nginx_Config](Docs/Nginx_Config.txt)
 
-    root /var/www/alternatives;
-    index alternative-index.html;
+Save the file and exit the editor.
 
-    location / {
-        try_files $uri $uri/ =404;
-    }
-}
-```
-The file was saved and the editor was exited.
+### 5. Restart Nginx
 
-
-### 5. Restarted Nginx
-
-After updating the configuration, Nginx was restarted to apply the changes:
+Restart Nginx to apply the configuration changes:
 
 ```bash
 sudo systemctl restart nginx.service
 ```
 
-
 ## Github configuration 
 
-### 1. Configured Git Globally
+### 1. Configure Git Globally
 
-To ensure that commits made on the server were associated with the GitHub account, Git was configured with the user name and email.
+Set Git user name and email globally on the server to associate commits with the GitHub account:
 
-The following commands were run to set the GitHub credentials globally:
 ```bash
 git config --global user.email "e1pmiS@github.com"
 git config --global user.name "e1pmiS"
 ```
-### 2. Generated SSH Key for GitHub
 
-An SSH key for GitHub was generated on the server.
-Then, the public key was added to the GitHub account.
+### 2. Generate SSH Key for GitHub
 
-The key was added to the GitHub account by navigating to Settings > SSH and GPG keys and clicking New SSH key. The key was pasted into the field and saved.
+Generate an SSH key on the server for GitHub access.
+
+Add the public key to the GitHub account by navigating to Settings > SSH and GPG keys, clicking New SSH key, pasting the key into the field, and saving it.
