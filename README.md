@@ -126,8 +126,8 @@ sudo systemctl restart nginx.service
 Set Git user name and email globally on the server to associate commits with the GitHub account:
 
 ```bash
-git config --global user.email "e1pmiS@github.com"
-git config --global user.name "e1pmiS"
+git config --global user.email "alibrahimabdullah@gmx.de"
+git config --global user.name "Abdullah"
 ```
 
 ### 2. Generate SSH Key for GitHub
